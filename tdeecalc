@@ -1,0 +1,55 @@
+"""
+TDEE Calculator Excel Generator
+Author: Duane Robinson
+Date: 2024-07-26
+
+This script creates an Excel spreadsheet for calculating Total Daily Energy Expenditure (TDEE)
+based on user inputs such as gender, weight, height, age, and activity level. The script uses 
+the Mifflin-St Jeor and Harris-Benedict equations to calculate Basal Metabolic Rate (BMR) and 
+then computes TDEE using the provided activity level. 
+
+The Excel file will have columns for user inputs and calculated values, along with embedded 
+formulas to perform the calculations automatically.
+
+Functions:
+    create_tdee_calculator_excel(file_path): Creates an Excel file with TDEE calculations.
+"""
+
+import pandas as pd
+from openpyxl import load_workbook
+
+def create_tdee_calculator_excel(file_path):
+    # Create a DataFrame with the necessary columns
+    df = pd.DataFrame({
+        'Gender': [],
+        'Weight (kg)': [],
+        'Height (cm)': [],
+        'Age (years)': [],
+        'Activity Level': [],
+        'BMR (Mifflin-St Jeor)': [],
+        'BMR (Harris-Benedict)': [],
+        'TDEE (Mifflin-St Jeor)': [],
+        'TDEE (Harris-Benedict)': []
+    })
+    
+    # Save the DataFrame to an Excel file
+    df.to_excel(file_path, index=False)
+    
+    # Load the Excel file with openpyxl to add formulas
+    wb = load_workbook(file_path)
+    ws = wb.active
+    
+    # Adding formulas for BMR calculations
+    ws['F2'] = '=IF(A2="Male", 10*B2 + 6.25*C2 - 5*D2 + 5, IF(A2="Female", 10*B2 + 6.25*C2 - 5*D2 - 161, ""))'
+    ws['G2'] = '=IF(A2="Male", 88.362 + 13.397*B2 + 4.799*C2 - 5.677*D2, IF(A2="Female", 447.593 + 9.247*B2 + 3.098*C2 - 4.330*D2, ""))'
+    
+    # Adding formulas for TDEE calculations based on activity level
+    ws['H2'] = '=F2 * IF(E2="Sedentary", 1.2, IF(E2="Lightly active", 1.375, IF(E2="Moderately active", 1.55, IF(E2="Very active", 1.725, IF(E2="Super active", 1.9, 1)))))'
+    ws['I2'] = '=G2 * IF(E2="Sedentary", 1.2, IF(E2="Lightly active", 1.375, IF(E2="Moderately active", 1.55, IF(E2="Very active", 1.725, IF(E2="Super active", 1.9, 1)))))'
+    
+    # Save the modified Excel file
+    wb.save(file_path)
+    print(f"Excel spreadsheet has been created at {file_path}")
+
+# Usage
+create_tdee_calculator_excel('TDEE_Calculator.xlsx')
