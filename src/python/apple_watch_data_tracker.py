@@ -1,3 +1,12 @@
+"""
+Script to create an Excel file with activity, health, and sleep data tracked by an Apple Watch.
+The script generates an Excel workbook with three tabs: Activity Data, Health Metrics, and Sleep Data.
+It also creates visualizations for the data and saves them as images.
+
+Author: Duane Robinson
+Date: July 25th, 2024
+"""
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -95,11 +104,18 @@ activity_sheet = workbook.create_sheet('Activity Data')
 # Add headers to the sheet
 activity_sheet.append(['Activity', 'Metrics Tracked'])
 
-# Append data to the activity sheet
+# Function to append data to a sheet
 def append_data(sheet, data):
+    """
+    Appends rows of data to a given sheet.
+    Parameters:
+        sheet (Worksheet): The worksheet to append data to.
+        data (list of lists): The data to append.
+    """
     for row_data in data:
         sheet.append(row_data)
 
+# Append data to the activity sheet
 append_data(activity_sheet, activity_data_list)
 
 # Add the 'Health Metrics' sheet
